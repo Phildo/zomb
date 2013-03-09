@@ -1,0 +1,120 @@
+precision mediump float;
+
+varying vec2 vTexCoord;
+uniform sampler2D uSampler;
+
+//void main()
+//{
+  //float xPix = 1.0/64.0 = 0.015625;
+  //float yPix = 1.0/32.0 = 0.03125;
+
+  //gl_FragColor = texture2D(uSampler, vTexCoord);
+//}
+
+void main()
+{
+  //float xPix = 1.0/64.0 = 0.015625;
+  //float yPix = 1.0/32.0 = 0.03125;
+
+  //vec4 sum = vec4(0);
+  //for(float i = -4.0; i <= 4.0; i+=1.0)
+  //{
+    //for(float j = -4.0; j <= 4.0; j+=1.0)
+    //{
+      //sum += texture2D(uSampler, vTexCoord + vec2(j*0.015625, i*0.03125)) * (((5.0-abs(i))/5.0)*((5.0-abs(j))/5.0)*0.075);
+    //}
+  //}
+
+  vec4 sum = vec4(0.0);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, -4.0*0.03125)) * (0.2*0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, -3.0*0.03125)) * (0.2*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, -2.0*0.03125)) * (0.2*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, -0.03125)) * (0.2*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, 0.0)) * (0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, 0.03125)) * (0.2*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, 2.0*0.03125)) * (0.2*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, 3.0*0.03125)) * (0.2*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-4.0*0.015625, 4.0*0.03125)) * (0.2*0.2*0.075);
+
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, -4.0*0.03125)) * (0.4*0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, -3.0*0.03125)) * (0.4*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, -2.0*0.03125)) * (0.4*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, -0.03125)) * (0.4*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, 0.0)) * (0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, 0.03125)) * (0.4*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, 2.0*0.03125)) * (0.4*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, 3.0*0.03125)) * (0.4*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-3.0*0.015625, 4.0*0.03125)) * (0.4*0.2*0.075);
+
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, -4.0*0.03125)) * (0.6*0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, -3.0*0.03125)) * (0.6*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, -2.0*0.03125)) * (0.6*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, -0.03125)) * (0.6*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, 0.0)) * (0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, 0.03125)) * (0.6*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, 2.0*0.03125)) * (0.6*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, 3.0*0.03125)) * (0.6*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-2.0*0.015625, 4.0*0.03125)) * (0.6*0.2*0.075);
+
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, -4.0*0.03125)) * (0.8*0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, -3.0*0.03125)) * (0.8*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, -2.0*0.03125)) * (0.8*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, -0.03125)) * (0.8*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, 0.0)) * (0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, 0.03125)) * (0.8*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, 2.0*0.03125)) * (0.8*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, 3.0*0.03125)) * (0.8*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(-0.015625, 4.0*0.03125)) * (0.8*0.2*0.075);
+
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, -4.0*0.03125)) * (0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, -3.0*0.03125)) * (0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, -2.0*0.03125)) * (0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, -0.03125)) * (0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, 0.0)) * (0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, 0.03125)) * (0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, 2.0*0.03125)) * (0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, 3.0*0.03125)) * (0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.0, 4.0*0.03125)) * (0.2*0.075);
+
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, -4.0*0.03125)) * (0.8*0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, -3.0*0.03125)) * (0.8*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, -2.0*0.03125)) * (0.8*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, -0.03125)) * (0.8*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, 0.0)) * (0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, 0.03125)) * (0.8*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, 2.0*0.03125)) * (0.8*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, 3.0*0.03125)) * (0.8*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(0.015625, 4.0*0.03125)) * (0.8*0.2*0.075);
+
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, -4.0*0.03125)) * (0.6*0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, -3.0*0.03125)) * (0.6*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, -2.0*0.03125)) * (0.6*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, -0.03125)) * (0.6*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, 0.0)) * (0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, 0.03125)) * (0.6*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, 2.0*0.03125)) * (0.6*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, 3.0*0.03125)) * (0.6*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(2.0*0.015625, 4.0*0.03125)) * (0.6*0.2*0.075);
+
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, -4.0*0.03125)) * (0.4*0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, -3.0*0.03125)) * (0.4*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, -2.0*0.03125)) * (0.4*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, -0.03125)) * (0.4*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, 0.0)) * (0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, 0.03125)) * (0.4*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, 2.0*0.03125)) * (0.4*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, 3.0*0.03125)) * (0.4*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(3.0*0.015625, 4.0*0.03125)) * (0.4*0.2*0.075);
+
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, -4.0*0.03125)) * (0.2*0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, -3.0*0.03125)) * (0.2*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, -2.0*0.03125)) * (0.2*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, -0.03125)) * (0.2*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, 0.0)) * (0.2*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, 0.03125)) * (0.2*0.8*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, 2.0*0.03125)) * (0.2*0.6*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, 3.0*0.03125)) * (0.2*0.4*0.075);
+  sum += texture2D(uSampler, vTexCoord + vec2(4.0*0.015625, 4.0*0.03125)) * (0.2*0.2*0.075);
+
+  gl_FragColor = texture2D(uSampler, vTexCoord) + (sum*sum);
+}

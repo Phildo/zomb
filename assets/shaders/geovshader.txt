@@ -1,0 +1,31 @@
+attribute vec3 aVertexPosition;
+attribute vec3 aVertexColor;
+attribute vec3 aVertexNormal;
+attribute float aMVMatrixIndex;
+
+uniform mat4 uMVMatrix[6];
+uniform mat4 uPMatrix;
+uniform mat4 uCamMatrix;
+uniform vec3 uLightPosition[10];
+uniform int uNumLights;
+
+varying vec3 vColor;
+varying vec3 vNormal;
+varying vec3 vRay[10];
+
+void main(void) 
+{
+  mat4 camera = uPMatrix * uCamMatrix;
+  vec4 vertPos = uMVMatrix[int(aMVMatrixIndex)]  * vec4(aVertexPosition, 1.0);
+
+  vColor = aVertexColor;
+  vNormal = ((uMVMatrix[int(aMVMatrixIndex)]  * vec4(aVertexPosition+aVertexNormal, 1.0))-vertPos).xyz;
+  for(int i = 0; i < 10; i++)
+  {
+    if(i < uNumLights)
+    {
+      vRay[i] = uLightPosition[i]-vertPos.xyz;
+    }
+  }
+  gl_Position = camera * vertPos;
+}

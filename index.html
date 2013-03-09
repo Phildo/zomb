@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>Low-Pixel 3D</title>
+</head>
+<style type='text/css'>
+  html 
+  {
+    image-rendering:optimizeSpeed;
+    image-rendering:optimize-contrast;
+    image-rendering:-webkit-optimize-contrast;
+    image-rendering:-moz-crisp-edges;
+  }
+</style>
+
+<script type='text/javascript' src='GL/utils/gl-matrix.js'></script>
+<script type='text/javascript' src='GL/utils/webgl-utils.js'></script>
+<script type='text/javascript' src='GL/GLMan.js'></script>
+<script type='text/javascript' src='GL/AssetMan.js'></script>
+<script type='text/javascript' src='GL/XGLProgram.js'></script>
+<script type='text/javascript' src='GL/GeoGLProgram.js'></script>
+<script type='text/javascript' src='GL/LowResTexGLProgram.js'></script>
+<script type='text/javascript' src='GL/HighResTexGLProgram.js'></script>
+<script type='text/javascript' src='GL/HudGLProgram.js'></script>
+<script type='text/javascript' src='GL/XGLGeo.js'></script>
+<script type='text/javascript' src='GL/XGLLight.js'></script>
+<script type='text/javascript' src='GL/TileGLGeo.js'></script>
+<script type='text/javascript' src='utils/AsyncLoaderMan.js'></script>
+<script type='text/javascript' src='utils/InputMan.js'></script>
+
+<script type='text/javascript'>
+//Managers
+var glm;//GLMan
+var am;//AssetMan
+var im;//InputMan
+
+//Gameloop variables
+var tick_tock;
+var stamps = [];
+var fps;
+var delta;
+
+function loadContent()
+{
+  //Init the men
+  glm = new GLMan(640, 320, glReady);
+  am  = new AssetMan(assetsReady);
+  im  = new InputMan();
+};
+
+function glReady()     { if(am.ready)  init(); };
+function assetsReady() { if(glm.ready) init(); };
+
+function init()
+{
+  //Positioning of the canvas on the DOM
+  document.getElementById('render_area').insertBefore(glm.canvas,document.getElementById('shadow'));
+  am.commitAssetsToGL(glm);
+
+  //Init game variables
+  tick_tock = true;
+  stamps[true]  = new Date().getTime();
+  stamps[false] = new Date().getTime();
+
+  //Move the camera a bit
+  mat4.translate(glm.geoProgram.camMatData,[0,0,10.0]);
+  mat4.translate(am.arms.mMat,[0,0,10.0]);
+
+  //Start the tick_tock
+  requestAnimFrame(tick,glm.canvas);
+}
+
+function tick()
+{
+  //Not sure if this ought to be at the end or beginning of this function...
+  requestAnimFrame(tick,glm.canvas);
+
+  //Read input/Move the 'player' (aka 'camera')
+  if(im.up || im.w)   { mat4.translate(glm.geoProgram.camMatData,[0,0,-0.3]); mat4.translate(am.arms.mMat,[0,0,-0.3]); }
+  if(im.down || im.s) { mat4.translate(glm.geoProgram.camMatData,[0,0,0.3]);  mat4.translate(am.arms.mMat,[0,0,0.3]);  }
+  if(im.a) { mat4.translate(glm.geoProgram.camMatData,[-0.3,0,0]); mat4.translate(am.arms.mMat,[-0.3,0,0]); }
+  if(im.d) { mat4.translate(glm.geoProgram.camMatData,[0.3,0,0]);  mat4.translate(am.arms.mMat,[0.3,0,0]);  }
+  if(im.left)  { mat4.rotate(glm.geoProgram.camMatData,0.03,[0,1,0]);  mat4.rotate(am.arms.mMat,0.03,[0,1,0]);  }
+  if(im.right) { mat4.rotate(glm.geoProgram.camMatData,-0.03,[0,1,0]); mat4.rotate(am.arms.mMat,-0.03,[0,1,0]); }
+
+  //Move the light
+  am.lightbox1.mPush();
+  mat4.translate(am.lightbox1.mMat,[Math.sin((50)/20)*3,Math.cos((50)/30)*3,Math.sin((50)/10)*3]);
+  am.light1.setPosition(Math.sin((50)/20)*3,Math.cos((50)/30)*3,Math.sin((50)/10)*3);
+
+  am.lightbox2.mPush();
+  mat4.translate(am.lightbox2.mMat,[Math.sin(0)*3,Math.cos(0)*3,Math.sin(0)*3]);
+  am.light2.setPosition(Math.sin(0)*3,Math.cos(0)*3,Math.sin(0)*3);
+
+  //Move the arms
+  am.arms.mPush();
+  mat4.translate(am.arms.mMat,[0.0,Math.sin(0)/10,0.0]);
+
+  //Render the updated data
+  glm.draw();
+
+  //Pop the matrices (NOTE- ONLY DO AFTER DRAWING!)
+  am.lightbox1.mPop();
+  am.lightbox2.mPop();
+  am.arms.mPop();
+
+  stamps[tick_tock] = new Date().getTime();
+  delta = (stamps[tick_tock] - stamps[!tick_tock]);
+  tick_tock = !tick_tock;
+  fps = Math.round(1000/delta);
+  am.fps1.tileIndex = fps%10;
+  am.fps10.tileIndex = (fps-am.fps1.tileIndex)/10;
+}
+
+window.addEventListener('load', loadContent, false);
+</script>
+<body style='background-color:#252529'>
+<div id='render_area' style='width:640px; margin:10px auto; position:relative; top:50px;'>
+  <img id='shadow' src='assets/images/shadow.png' style='display:block;'></img>
+</div>
+</body>
+</html>
