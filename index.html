@@ -53,76 +53,80 @@ function assetsReady() { if(glm.ready) init(); };
 
 function init()
 {
-  //Positioning of the canvas on the DOM
-  document.getElementById('render_area').insertBefore(glm.canvas,document.getElementById('shadow'));
+  //push content to GL
   am.commitAssetsToGL(glm);
+  //push canvas to DOM
+  document.getElementById('render_area').insertBefore(glm.canvas,document.getElementById('shadow'));
 
-  //Init game variables
+  //Init game loop variables
   tick_tock = true;
   stamps[true]  = new Date().getTime();
   stamps[false] = new Date().getTime();
   fps = 0;
   fpsDisplayUpdateCountdown = 10;
 
-  //Move the camera a bit
-  mat4.translate(glm.geoProgram.camMatData,[0,0,10.0]);
-  mat4.translate(am.arms.mMat,[0,0,10.0]);
+  //Move the lights
+  mat4.translate(am.lightbox1.mMat,[0,1,0]);
+  am.light1.setPosition(0,1,0);
+  mat4.translate(am.lightbox2.mMat,[2,0,2]);
+  am.light2.setPosition(2,0,2);
 
   //Start the tick_tock
   requestAnimFrame(tick,glm.canvas);
 }
 
-var metaHandProgress = 2.141592;
-var handProgress = 0;
-var handY = 0;
-var camY  = 0;
-var y = 0;
+
+var playerX   = 0;
+var playerZ   = 10;
+var playerDir = 0; //Radians: 0 = 2pi = facing -Z
+var playerVel = 0; //+ = forward, - = backward
+var playerSSV = 0; //Side-Strafe-Velocity (+ = left, - = right);
+var yWave = 0;
+var yMag = 6;
 function tick()
 {
   requestAnimFrame(tick,glm.canvas);
 
-  //Read input/Move the 'player' (aka 'camera')
-  if(im.up || im.w)   { mat4.translate(glm.geoProgram.camMatData,[0,0,-0.3]); mat4.translate(am.arms.mMat,[0,0,-0.3]); }
-  if(im.down || im.s) { mat4.translate(glm.geoProgram.camMatData,[0,0,0.3]);  mat4.translate(am.arms.mMat,[0,0,0.3]);  }
-  if(im.a) { mat4.translate(glm.geoProgram.camMatData,[-0.3,0,0]); mat4.translate(am.arms.mMat,[-0.3,0,0]); }
-  if(im.d) { mat4.translate(glm.geoProgram.camMatData,[0.3,0,0]);  mat4.translate(am.arms.mMat,[0.3,0,0]);  }
-  if(im.left)  { mat4.rotate(glm.geoProgram.camMatData,0.03,[0,1,0]);  mat4.rotate(am.arms.mMat,0.03,[0,1,0]);  }
-  if(im.right) { mat4.rotate(glm.geoProgram.camMatData,-0.03,[0,1,0]); mat4.rotate(am.arms.mMat,-0.03,[0,1,0]); }
+  //Reset absolute positions
+  mat4.identity(glm.geoProgram.camMatData);
+  mat4.identity(am.arms.mMat);
+  //Reset delta vars
+  playerVel = 0;
+  playerSSV = 0;
+  
+  //Read lateral movement
+  if(im.right)        playerDir -= 0.03;
+  if(im.left)         playerDir += 0.03;
+  if(im.up   || im.w) playerVel += 0.3;
+  if(im.down || im.s) playerVel -= 0.3;
+  if(im.a)            playerSSV += 0.15;
+  if(im.d)            playerSSV -= 0.15;
 
-  //Move the light
-  am.lightbox1.mPush();
-  mat4.translate(am.lightbox1.mMat,[0,1,0]);
-  am.light1.setPosition(0,1,0);
+  //Calculate Back/Forth
+  playerX -= playerVel * Math.sin(playerDir);
+  playerZ -= playerVel * Math.cos(playerDir);
+  //Calculate Side/Side
+  playerX -= playerSSV * Math.sin(playerDir+(Math.PI/2));
+  playerZ -= playerSSV * Math.cos(playerDir+(Math.PI/2));
+  //Calculate y movement
+  yWave += 0.1;
+  yMag = 16;
+  if(playerVel != 0) { yWave += 0.15; yMag = 10; }
+  if(playerSSV != 0) yWave += 0.05;
 
-  am.lightbox2.mPush();
-  mat4.translate(am.lightbox2.mMat,[2,0,2]);
-  am.light2.setPosition(2,0,2);
-
-  //Move the arms
-  handProgress += (Math.cos(metaHandProgress/2)+1.1)/20;
-  am.arms.mPush();
-  //mat4.identity(glm.geoProgram.camMatData);
-  //mat4.translate(glm.geoProgram.camMatData,[0,0,10.0]);
-  //mat4.translate(glm.geoProgram.camMatData,[0,y*1.2,0]);
-  y = (1-Math.sin(handProgress)/10)-1;
-  mat4.translate(am.arms.mMat,[0.0,y,0.0]);
-  metaHandProgress += 0.1;
-  handProgress += (Math.cos(metaHandProgress/2)+1)/20;
-  metaHandProgress += 0.1;
-  handProgress += (Math.cos(metaHandProgress/2)+1)/20;
-  metaHandProgress += 0.1;
+  //Plug in lateral movement
+  mat4.translate(glm.geoProgram.camMatData,[0,0,playerZ]);  mat4.translate(am.arms.mMat,[0,0,playerZ]);
+  mat4.translate(glm.geoProgram.camMatData,[playerX,0,0]);  mat4.translate(am.arms.mMat,[playerX,0,0]);
+  mat4.rotate(glm.geoProgram.camMatData,playerDir,[0,1,0]); mat4.rotate(am.arms.mMat,playerDir,[0,1,0]);
+  //Plug in y movement
+  mat4.translate(am.arms.mMat,[0,Math.sin(yWave)/yMag,0]);
+  mat4.translate(glm.geoProgram.camMatData,[0,Math.sin(yWave+0.4)/yMag,0]);
 
   //Render the updated data
   glm.draw();
-
-  //Pop the matrices (NOTE- ONLY DO AFTER DRAWING!)
-  am.lightbox1.mPop();
-  am.lightbox2.mPop();
-  am.arms.mPop();
-
-  stamps[tick_tock] = new Date().getTime();
-  delta = (stamps[tick_tock] - stamps[!tick_tock]);
-  tick_tock = !tick_tock;
+  
+  //Game loop/framerate vars
+  delta = ((stamps[tick_tock] = new Date().getTime()) - stamps[(tick_tock = !tick_tock)]);
   fpsDisplayUpdateCountdown--;
   if(fpsDisplayUpdateCountdown == 0)
   {
@@ -139,5 +143,6 @@ window.addEventListener('load', loadContent, false);
 <div id='render_area' style='width:640px; margin:10px auto; position:relative; top:50px;'>
   <img id='shadow' src='assets/images/shadow.png' style='display:block;'></img>
 </div>
+<div id="debug" style="color:white; position:absolute; top:0px;"></div>
 </body>
 </html>
