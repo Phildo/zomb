@@ -49,11 +49,11 @@ var AssetMan = function(assetsReadyCallback)
     lightboxData = JSON.parse(files.lightbox);
     self.lightbox2 = new XGLGeo(lightboxData.verts, lightboxData.colors, lightboxData.normals, lightboxData.indexes);
   
-    var hrClipscreenData = JSON.parse(files.clipscreen);
-    self.clipscreen = new XGLGeo(hrClipscreenData.verts, hrClipscreenData.colors, hrClipscreenData.normals, hrClipscreenData.indexes);
-  
     var lrClipscreenData = JSON.parse(files.clipscreen);
     self.clipscreen = new XGLGeo(lrClipscreenData.verts, lrClipscreenData.colors, lrClipscreenData.normals, lrClipscreenData.indexes);
+  
+    var hrClipscreenData = JSON.parse(files.clipscreen);
+    self.clipscreen = new XGLGeo(hrClipscreenData.verts, hrClipscreenData.colors, hrClipscreenData.normals, hrClipscreenData.indexes);
   
     var tileData = JSON.parse(files.tile);
     self.fps10 = TileGLGeo(tileData.verts, tileData.colors, tileData.normals, tileData.indexes);
@@ -119,7 +119,7 @@ var AssetMan = function(assetsReadyCallback)
     'assets/geometry/street.json',
     'assets/geometry/lightbox.json',
     'assets/geometry/clipscreen.json',
-    'assets/geometry/tile.json']
+    'assets/geometry/tile.json'],
     ['arms','street','lightbox','clipscreen','tile'], 
     initGeoFromFiles));
     
@@ -143,8 +143,8 @@ var AssetMan = function(assetsReadyCallback)
     glm.geoProgram.addGeo(this.street);
     glm.geoProgram.addGeo(this.lightbox1);
     glm.geoProgram.addGeo(this.lightbox2);
-    glm.hrtProgram.addGeo(this.clipscreen);
     glm.lrtProgram.addGeo(this.clipscreen);
+    glm.hrtProgram.addGeo(this.clipscreen);
     glm.hudProgram.addGeo(this.fps10);
     glm.hudProgram.addGeo(this.fps1);
     glm.hudProgram.addGeo(this.tilef);

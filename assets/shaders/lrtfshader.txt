@@ -17,25 +17,10 @@ void main()
       if(texture2D(uSampler, vTexCoord + vec2(j*0.015625, i*0.03125)) == vec4(1.0))
       {
         sum += ((5.0-abs(i))/5.0)*((5.0-abs(j))/5.0)*0.1;
+        //sum = 0.0;
       }
     }
   }
 
   gl_FragColor = texture2D(uSampler, vTexCoord)+sum;
-
-  //if(texture2D(uSampler, vTexCoord).r < 0.3)
-  //{
-    //gl_FragColor = sum*sum*0.012 + texture2D(uSampler, vTexCoord);
-  //}
-  //else
-  //{
-    //if(texture2D(uSampler,vTexCoord).r < 0.5)
-    //{
-      //gl_FragColor = sum*sum*0.009 + texture2D(uSampler, vTexCoord);
-    //}
-    //else
-    //{
-    //gl_FragColor = sum*sum*0.0075 + texture2D(uSampler, vTexCoord);
-    //}
-  //}
 }

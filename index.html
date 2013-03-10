@@ -37,6 +37,7 @@ var im;//InputMan
 var tick_tock;
 var stamps = [];
 var fps;
+var fpsDisplayUpdateCountdown;
 var delta;
 
 function loadContent()
@@ -60,6 +61,8 @@ function init()
   tick_tock = true;
   stamps[true]  = new Date().getTime();
   stamps[false] = new Date().getTime();
+  fps = 0;
+  fpsDisplayUpdateCountdown = 10;
 
   //Move the camera a bit
   mat4.translate(glm.geoProgram.camMatData,[0,0,10.0]);
@@ -69,9 +72,13 @@ function init()
   requestAnimFrame(tick,glm.canvas);
 }
 
+var metaHandProgress = 2.141592;
+var handProgress = 0;
+var handY = 0;
+var camY  = 0;
+var y = 0;
 function tick()
 {
-  //Not sure if this ought to be at the end or beginning of this function...
   requestAnimFrame(tick,glm.canvas);
 
   //Read input/Move the 'player' (aka 'camera')
@@ -84,16 +91,26 @@ function tick()
 
   //Move the light
   am.lightbox1.mPush();
-  mat4.translate(am.lightbox1.mMat,[Math.sin((50)/20)*3,Math.cos((50)/30)*3,Math.sin((50)/10)*3]);
-  am.light1.setPosition(Math.sin((50)/20)*3,Math.cos((50)/30)*3,Math.sin((50)/10)*3);
+  mat4.translate(am.lightbox1.mMat,[0,1,0]);
+  am.light1.setPosition(0,1,0);
 
   am.lightbox2.mPush();
-  mat4.translate(am.lightbox2.mMat,[Math.sin(0)*3,Math.cos(0)*3,Math.sin(0)*3]);
-  am.light2.setPosition(Math.sin(0)*3,Math.cos(0)*3,Math.sin(0)*3);
+  mat4.translate(am.lightbox2.mMat,[2,0,2]);
+  am.light2.setPosition(2,0,2);
 
   //Move the arms
+  handProgress += (Math.cos(metaHandProgress/2)+1.1)/20;
   am.arms.mPush();
-  mat4.translate(am.arms.mMat,[0.0,Math.sin(0)/10,0.0]);
+  //mat4.identity(glm.geoProgram.camMatData);
+  //mat4.translate(glm.geoProgram.camMatData,[0,0,10.0]);
+  //mat4.translate(glm.geoProgram.camMatData,[0,y*1.2,0]);
+  y = (1-Math.sin(handProgress)/10)-1;
+  mat4.translate(am.arms.mMat,[0.0,y,0.0]);
+  metaHandProgress += 0.1;
+  handProgress += (Math.cos(metaHandProgress/2)+1)/20;
+  metaHandProgress += 0.1;
+  handProgress += (Math.cos(metaHandProgress/2)+1)/20;
+  metaHandProgress += 0.1;
 
   //Render the updated data
   glm.draw();
@@ -106,9 +123,14 @@ function tick()
   stamps[tick_tock] = new Date().getTime();
   delta = (stamps[tick_tock] - stamps[!tick_tock]);
   tick_tock = !tick_tock;
-  fps = Math.round(1000/delta);
-  am.fps1.tileIndex = fps%10;
-  am.fps10.tileIndex = (fps-am.fps1.tileIndex)/10;
+  fpsDisplayUpdateCountdown--;
+  if(fpsDisplayUpdateCountdown == 0)
+  {
+    fps = Math.round(1000/delta);
+    am.fps1.tileIndex = fps%10;
+    am.fps10.tileIndex = (fps-am.fps1.tileIndex)/10;
+    fpsDisplayUpdatecountdown = 10;
+  }
 }
 
 window.addEventListener('load', loadContent, false);

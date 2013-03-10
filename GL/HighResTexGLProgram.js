@@ -82,7 +82,7 @@ var HighResTexGLProgram = function (gl, vs, fs)
   that.draw = function()
   {
     gl.useProgram(that.gl_program);
-    gl.viewport(0,0,glm.canvas.width,glm.canvas.height);
+    gl.viewport(0,0,glm.highResDim.width,glm.highResDim.height);
     that.bindAttributes();
     gl.drawElements(gl.TRIANGLES, that.indexData.length, gl.UNSIGNED_SHORT, 0);
   }

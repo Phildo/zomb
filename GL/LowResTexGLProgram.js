@@ -31,7 +31,7 @@ var LowResTexGLProgram = function (gl, vs, fs)
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, that.texture, 0);
 
   //Model references
-  that.vertData = [];
+  that.vertData  = [];
   that.indexData = [];
 
   that.compileStaticData = function()
