@@ -81,15 +81,24 @@ var playerZ   = 10;
 var playerDir = 0; //Radians: 0 = 2pi = facing -Z
 var playerVel = 0; //+ = forward, - = backward
 var playerSSV = 0; //Side-Strafe-Velocity (+ = left, - = right);
-var yWave = 0;
-var yMag = 6;
+//Lurch variables
+var leftYWave  = 0.0;
+var rightYWave = 0.4;
+var camYWave   = 0.5;
+var leftYMag   = 0;
+var rightYMag  = 0;
+var camYMag    = 0;
+var leftYOffset  = 0;
+var rightYOffset = 0;
+var camYOffset   = 0;
 function tick()
 {
   requestAnimFrame(tick,glm.canvas);
 
   //Reset absolute positions
   mat4.identity(glm.geoProgram.camMatData);
-  mat4.identity(am.arms.mMat);
+  mat4.identity(am.leftarm.mMat);
+  mat4.identity(am.rightarm.mMat);
   //Reset delta vars
   playerVel = 0;
   playerSSV = 0;
@@ -97,10 +106,10 @@ function tick()
   //Read lateral movement
   if(im.right)        playerDir -= 0.03;
   if(im.left)         playerDir += 0.03;
-  if(im.up   || im.w) playerVel += 0.3;
-  if(im.down || im.s) playerVel -= 0.3;
-  if(im.a)            playerSSV += 0.15;
-  if(im.d)            playerSSV -= 0.15;
+  if(im.up   || im.w) playerVel += ((Math.sin(leftYWave)+1)/30);
+  if(im.down || im.s) playerVel -= ((Math.sin(leftYWave)+1)/120)+0.03;
+  if(im.a)            playerSSV += ((Math.sin(leftYWave)+1)/120)+0.03;
+  if(im.d)            playerSSV -= ((Math.sin(leftYWave)+1)/120)+0.03;
 
   //Calculate Back/Forth
   playerX -= playerVel * Math.sin(playerDir);
@@ -109,18 +118,44 @@ function tick()
   playerX -= playerSSV * Math.sin(playerDir+(Math.PI/2));
   playerZ -= playerSSV * Math.cos(playerDir+(Math.PI/2));
   //Calculate y movement
-  yWave += 0.1;
-  yMag = 16;
-  if(playerVel != 0) { yWave += 0.15; yMag = 10; }
-  if(playerSSV != 0) yWave += 0.05;
+  if(playerVel > 0) //moving
+  {
+    leftYWave  += ((Math.sin(leftYWave) +1)/64)+0.05;
+    rightYWave += ((Math.sin(rightYWave)+1)/64)+0.05;
+    camYWave   += ((Math.sin(camYWave)  +1)/64)+0.05;
+    leftYMag  = 4;
+    rightYMag = 5;
+    camYMag   = 8;
+  }
+  else if(playerVel < 0 || playerSSV != 0) //strafing
+  {
+    leftYWave  += ((Math.sin(leftYWave) +1)/32)+0.1;
+    rightYWave += ((Math.sin(rightYWave)+1)/32)+0.1;
+    camYWave   += ((Math.sin(camYWave)  +1)/32)+0.1;
+    leftYMag  = 7;
+    rightYMag = 8;
+    camYMag   = 10;
+  }
+  else //rest
+  {
+    leftYWave  += ((Math.sin(leftYWave) +1)/64)+0.05;
+    rightYWave += ((Math.sin(rightYWave)+1)/64)+0.05;
+    camYWave   += ((Math.sin(camYWave)  +1)/64)+0.05;
+    leftYMag  = 7;
+    rightYMag = 8;
+    camYMag   = 10;
+  }
 
   //Plug in lateral movement
-  mat4.translate(glm.geoProgram.camMatData,[0,0,playerZ]);  mat4.translate(am.arms.mMat,[0,0,playerZ]);
-  mat4.translate(glm.geoProgram.camMatData,[playerX,0,0]);  mat4.translate(am.arms.mMat,[playerX,0,0]);
-  mat4.rotate(glm.geoProgram.camMatData,playerDir,[0,1,0]); mat4.rotate(am.arms.mMat,playerDir,[0,1,0]);
+  mat4.translate(glm.geoProgram.camMatData,[0,0,playerZ]);  mat4.translate(am.leftarm.mMat,[0,0,playerZ]);  mat4.translate(am.rightarm.mMat,[0,0,playerZ]);
+  mat4.translate(glm.geoProgram.camMatData,[playerX,0,0]);  mat4.translate(am.leftarm.mMat,[playerX,0,0]);  mat4.translate(am.rightarm.mMat,[playerX,0,0]);
+  mat4.rotate(glm.geoProgram.camMatData,playerDir,[0,1,0]); mat4.rotate(am.leftarm.mMat,playerDir,[0,1,0]); mat4.rotate(am.rightarm.mMat,playerDir,[0,1,0]);
   //Plug in y movement
-  mat4.translate(am.arms.mMat,[0,Math.sin(yWave)/yMag,0]);
-  mat4.translate(glm.geoProgram.camMatData,[0,Math.sin(yWave+0.4)/yMag,0]);
+  mat4.translate(am.leftarm.mMat,          [0,(Math.sin(leftYWave) /leftYMag), 0]);
+  mat4.translate(am.rightarm.mMat,         [0,(Math.sin(rightYWave)/rightYMag),0]);
+  mat4.translate(glm.geoProgram.camMatData,[0,(Math.sin(camYWave)  /camYMag),  0]);
+  if(playerVel > 0) //lunge camera forward
+    mat4.translate(glm.geoProgram.camMatData,[0,0,-1*(Math.sin(camYWave)/5)]);
 
   //Render the updated data
   glm.draw();

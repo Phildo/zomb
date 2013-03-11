@@ -10,7 +10,8 @@ var AssetMan = function(assetsReadyCallback)
   this.light2     = null;
   this.light3     = null;
   
-  this.arms       = null;
+  this.leftarm   = null;
+  this.rightarm  = null;
   this.street     = null;
   this.lightbox1  = null;
   this.lightbox2  = null;
@@ -37,9 +38,12 @@ var AssetMan = function(assetsReadyCallback)
     self.light2 = new XGLLight([0,0,0]);
     self.light3 = new XGLLight([5,2,0]);
     
-    var armsData = JSON.parse(files.arms);
-    self.arms = new XGLGeo(armsData.verts, armsData.colors, armsData.normals, armsData.indexes);
+    var leftArmData = JSON.parse(files.left_arm);
+    self.leftarm = new XGLGeo(leftArmData.verts, leftArmData.colors, leftArmData.normals, leftArmData.indexes);
   
+    var rightArmData = JSON.parse(files.right_arm);
+    self.rightarm = new XGLGeo(rightArmData.verts, rightArmData.colors, rightArmData.normals, rightArmData.indexes);
+    
     var streetData = JSON.parse(files.street);
     self.street = new XGLGeo(streetData.verts, streetData.colors, streetData.normals, streetData.indexes);
   
@@ -115,12 +119,13 @@ var AssetMan = function(assetsReadyCallback)
   };
 
   AsyncLoader.loadBatch(new AsyncLoaderBatch(
-    ['assets/geometry/arms.json',
+    ['assets/geometry/left_arm.json',
+    'assets/geometry/right_arm.json',
     'assets/geometry/street.json',
     'assets/geometry/lightbox.json',
     'assets/geometry/clipscreen.json',
     'assets/geometry/tile.json'],
-    ['arms','street','lightbox','clipscreen','tile'], 
+    ['left_arm','right_arm','street','lightbox','clipscreen','tile'], 
     initGeoFromFiles));
     
   function initTexture()
@@ -139,7 +144,8 @@ var AssetMan = function(assetsReadyCallback)
     glm.geoProgram.addLight(this.light2);
     glm.geoProgram.addLight(this.light3);
     
-    glm.geoProgram.addGeo(this.arms);
+    glm.geoProgram.addGeo(this.leftarm);
+    glm.geoProgram.addGeo(this.rightarm);
     glm.geoProgram.addGeo(this.street);
     glm.geoProgram.addGeo(this.lightbox1);
     glm.geoProgram.addGeo(this.lightbox2);
