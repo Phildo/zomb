@@ -149,7 +149,8 @@ var AssetMan = function(assetsReadyCallback)
     glm.geoProgram.addGeo(this.street);
     glm.geoProgram.addGeo(this.lightbox1);
     glm.geoProgram.addGeo(this.lightbox2);
-    glm.lrtProgram.addGeo(this.clipscreen);
+    glm.lrt1Program.addGeo(this.clipscreen);
+    glm.lrt2Program.addGeo(this.clipscreen);
     glm.hrtProgram.addGeo(this.clipscreen);
     glm.hudProgram.addGeo(this.fps10);
     glm.hudProgram.addGeo(this.fps1);
@@ -166,7 +167,8 @@ var AssetMan = function(assetsReadyCallback)
     glm.hudProgram.initTexture(this.tileTex);
   
     glm.geoProgram.compileStaticData();
-    glm.lrtProgram.compileStaticData();
+    glm.lrt1Program.compileStaticData();
+    glm.lrt2Program.compileStaticData();
     glm.hrtProgram.compileStaticData();
     glm.hudProgram.compileStaticData();
   };

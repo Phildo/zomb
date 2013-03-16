@@ -23,19 +23,21 @@ var GLMan = function (width, height, glReadyCallback)
   //this.lowResDim = { "width":width, "height":height };
   this.highResDim = { "width":width, "height":height };
 
-  this.geoProgram = null;
-  this.lrtProgram = null;
-  this.hrtProgram = null;
-  this.hudProgram = null;
+  this.geoProgram  = null;
+  this.lrt1Program = null;
+  this.lrt2Program = null;
+  this.hrtProgram  = null;
+  this.hudProgram  = null;
 
   var initShadersFromFiles = function(files)
   {
     if(!files) { console.log("Error loading shaders."); return; }
     
-    self.geoProgram = new GeoGLProgram       (gl_context, files.geovs, files.geofs);
-    self.lrtProgram = new LowResTexGLProgram (gl_context, files.lrtvs, files.lrtfs);
-    self.hrtProgram = new HighResTexGLProgram(gl_context, files.hrtvs, files.hrtfs);
-    self.hudProgram = new HudGLProgram       (gl_context, files.hudvs, files.hudfs);
+    self.geoProgram = new GeoGLProgram         (gl_context, files.geovs,  files.geofs);
+    self.lrt1Program = new LowResTex1GLProgram (gl_context, files.lrt1vs, files.lrt1fs);
+    self.lrt2Program = new LowResTex2GLProgram (gl_context, files.lrt2vs, files.lrt2fs);
+    self.hrtProgram = new HighResTexGLProgram  (gl_context, files.hrtvs,  files.hrtfs);
+    self.hudProgram = new HudGLProgram         (gl_context, files.hudvs,  files.hudfs);
     self.ready = true;
     glReadyCallback();
   };
@@ -44,25 +46,31 @@ var GLMan = function (width, height, glReadyCallback)
   AsyncLoader.loadBatch(new AsyncLoaderBatch(
     ['assets/shaders/geovshader.txt',
     'assets/shaders/geofshader.txt',
-    'assets/shaders/lrtvshader.txt',
-    'assets/shaders/lrtfshader.txt',
+    'assets/shaders/lrt1vshader.txt',
+    'assets/shaders/lrt1fshader.txt',
+    'assets/shaders/lrt2vshader.txt',
+    'assets/shaders/lrt2fshader.txt',
     'assets/shaders/hrtvshader.txt',
     'assets/shaders/hrtfshader.txt',
     'assets/shaders/hudvshader.txt',
     'assets/shaders/hudfshader.txt'],
-    ['geovs','geofs','lrtvs','lrtfs','hrtvs','hrtfs','hudvs','hudfs'], 
+    ['geovs','geofs','lrt1vs','lrt1fs','lrt2vs','lrt2fs','hrtvs','hrtfs','hudvs','hudfs'], 
     initShadersFromFiles));
 
   this.draw = function()
   {
-    gl_context.bindFramebuffer(gl_context.FRAMEBUFFER, this.lrtProgram.frameBuffer);
+    gl_context.bindFramebuffer(gl_context.FRAMEBUFFER, this.lrt1Program.frameBuffer);
     gl_context.clear(gl_context.COLOR_BUFFER_BIT | gl_context.DEPTH_BUFFER_BIT);
     this.geoProgram.draw();
 
+    gl_context.bindFramebuffer(gl_context.FRAMEBUFFER, this.lrt2Program.frameBuffer);
+    gl_context.clear(gl_context.DEPTH_BUFFER_BIT);
+    this.lrt1Program.draw();
+
     gl_context.bindFramebuffer(gl_context.FRAMEBUFFER, this.hrtProgram.frameBuffer);
     gl_context.clear(gl_context.DEPTH_BUFFER_BIT);
-    this.lrtProgram.draw();
-
+    this.lrt2Program.draw();
+    
     gl_context.bindFramebuffer(gl_context.FRAMEBUFFER, null);
     gl_context.clear(gl_context.COLOR_BUFFER_BIT | gl_context.DEPTH_BUFFER_BIT);
     this.hrtProgram.draw();
