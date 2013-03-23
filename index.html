@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Low-Pixel 3D</title>
+<title>Zomb</title>
 </head>
 <style type='text/css'>
   html 
@@ -108,9 +108,9 @@ function tick()
   if(im.right)        playerDir -= 0.03;
   if(im.left)         playerDir += 0.03;
   if(im.up   || im.w) playerVel += ((Math.sin(leftYWave)+1)/30);
-  if(im.down || im.s) playerVel -= ((Math.sin(leftYWave)+1)/120)+0.03;
-  if(im.a)            playerSSV += ((Math.sin(leftYWave)+1)/120)+0.03;
-  if(im.d)            playerSSV -= ((Math.sin(leftYWave)+1)/120)+0.03;
+  if(im.down || im.s) playerVel -= ((Math.sin(leftYWave)+1)/120)+0.01;
+  if(im.a)            playerSSV += ((Math.sin(leftYWave)+1)/120)+0.01;
+  if(im.d)            playerSSV -= ((Math.sin(leftYWave)+1)/120)+0.01;
 
   //Calculate Back/Forth
   playerX -= playerVel * Math.sin(playerDir);
