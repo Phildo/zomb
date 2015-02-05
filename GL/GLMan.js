@@ -13,7 +13,7 @@ var GLMan = function (width, height, glReadyCallback)
   this.canvas = canvas;
 
   //Init gl obj
-  var gl_context = canvas.getContext('experimental-webgl',{antialias:false});
+  var gl_context = canvas.getContext('webgl',{antialias:false});
   gl_context.enable(gl_context.DEPTH_TEST);
   gl_context.blendFunc(gl_context.SRC_ALPHA, gl_context.ONE_MINUS_SRC_ALPHA);
   gl_context.clearColor(0.0, 0.0, 0.0, 1.0);
